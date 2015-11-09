@@ -79,6 +79,7 @@ const GLfloat vertexData[] = {
 
 // offset
 GLfloat offsetLeftBat[] = { -0.95, 0.0 };
+GLfloat offsetRightBat[] = { 0.9, 0.0 };
 GLfloat offsetUpdateSpeed[] = { 0.1, 0.1 };
 
 //the color we'll pass to the GLSL
@@ -400,6 +401,10 @@ void render()
 	glUniform2f(offsetLocation, offsetLeftBat[0], offsetLeftBat[1]); // update the position of the bat
 
 	glBindVertexArray(vertexArrayObject);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glUniform2f(offsetLocation, offsetRightBat[0], offsetRightBat[1]); // update the position of the bat
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
