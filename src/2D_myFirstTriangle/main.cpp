@@ -39,9 +39,11 @@ std::string frameLine = "";
 const std::string strVertexShader = R"(
 	#version 330
 	in vec2 position;
+	uniform vec2 offset;
 	void main()
 	{
-		 gl_Position = vec4(position, 0.0, 1.0);
+		vec2 trianglePos = position + offset;
+		gl_Position = vec4(trianglePos, 0.0, 1.0);
 	}
 )";
 // end::vertexShader[]
@@ -75,6 +77,10 @@ const GLfloat vertexData[] = {
 	0.050f, -0.200f
 };
 
+// offset
+GLfloat offsetLeftBat[] = { -0.95, 0.0 };
+GLfloat offsetUpdateSpeed[] = { 0.1, 0.1 };
+
 //the color we'll pass to the GLSL
 GLfloat color[] = { 1.0f, 1.0f, 1.0f }; //using different values from CPU and static GLSL examples, to make it clear this is working
 
@@ -83,6 +89,7 @@ GLfloat color[] = { 1.0f, 1.0f, 1.0f }; //using different values from CPU and st
 GLuint theProgram; //GLuint that we'll fill in to refer to the GLSL program (only have 1 at this point)
 GLint positionLocation; //GLuint that we'll fill in with the location of the `position` attribute in the GLSL
 GLint colorLocation; //GLuint that we'll fill in with the location of the `color` variable in the GLSL
+GLint offsetLocation;
 
 GLuint vertexDataBufferObject;
 GLuint vertexArrayObject;
@@ -262,6 +269,8 @@ void initializeProgram()
 
 	positionLocation = glGetAttribLocation(theProgram, "position");
 	colorLocation = glGetUniformLocation(theProgram, "color");
+	offsetLocation = glGetUniformLocation(theProgram, "offset");
+
 	//clean up shaders (we don't need them anymore as they are no in theProgram
 	for_each(shaderList.begin(), shaderList.end(), glDeleteShader);
 }
@@ -387,6 +396,8 @@ void render()
 	glUniform3f(colorLocation, color[0], color[1], color[2]);
 		//alternatively, use glUnivform2fv
 		//glUniform2fv(colorLocation, 1, color); //Note: the count is 1, because we are setting a single uniform vec2 - https://www.opengl.org/wiki/GLSL_:_common_mistakes#How_to_use_glUniform
+
+	glUniform2f(offsetLocation, offsetLeftBat[0], offsetLeftBat[1]); // update the position of the bat
 
 	glBindVertexArray(vertexArrayObject);
 
