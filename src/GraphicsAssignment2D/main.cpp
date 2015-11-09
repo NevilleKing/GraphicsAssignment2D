@@ -86,6 +86,8 @@ GLfloat offsetLeftBat[] = { -0.95, 0.0 };
 GLfloat offsetRightBat[] = { 0.9, 0.0 };
 GLfloat offsetUpdateSpeed = 1.3;
 
+GLfloat paddleBounds[] = { 0.8, -0.8 };
+
 // directions of paddles
 GLfloat leftPaddleDirection = 0.0f;
 GLfloat rightPaddleDirection = 0.0f;
@@ -109,6 +111,11 @@ GLuint vertexArrayObject;
 
 // end Global Variables
 /////////////////////////
+
+GLfloat clamp(GLfloat value, GLfloat min, GLfloat max)
+{
+	return std::max(std::min(value, max), min);
+}
 
 // tag::initialise[]
 void initialise()
@@ -437,6 +444,9 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 
 	offsetLeftBat[1] += (leftPaddleDirection * offsetUpdateSpeed * delta); // update the left bat location
 	offsetRightBat[1] += (rightPaddleDirection * offsetUpdateSpeed * delta); // update the right bat location
+	
+	offsetLeftBat[1] = clamp(offsetLeftBat[1], paddleBounds[1], paddleBounds[0]);
+	offsetRightBat[1] = clamp(offsetRightBat[1], paddleBounds[1], paddleBounds[0]);
 }
 // end::updateSimulation[]
 
