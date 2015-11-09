@@ -65,10 +65,14 @@ bool done = false;
 
 //the data about our geometry
 const GLfloat vertexData[] = {
-//	X			Y
-	 0.000f,	0.500f,
-	-0.433f,	-0.250f,
-	 0.433f,	-0.250f,
+//      X          Y
+// Paddle
+	0.000f,	0.500f, // 1st triangle
+	0.000f,	0.000f,
+	0.100f,	0.000f,
+	0.000f, 0.500f, // 2nd triangle
+	0.100f, 0.500f,
+	0.100f, 0.000f
 };
 
 //the color we'll pass to the GLSL
@@ -369,7 +373,7 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 void preRender()
 {
 	glViewport(0, 0, 600, 600); //set viewpoint
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f); //set clear colour
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //set clear colour
 	glClear(GL_COLOR_BUFFER_BIT); //clear the window (technical the scissor box bounds)
 }
 // end::preRender[]
@@ -386,7 +390,7 @@ void render()
 
 	glBindVertexArray(vertexArrayObject);
 
-	glDrawArrays(GL_TRIANGLES, 0, 3); //Draw something, using Triangles, and 3 vertices - i.e. one lonely triangle
+	glDrawArrays(GL_TRIANGLES, 0, 6); //Draw something, using Triangles, and 3 vertices - i.e. one lonely triangle
 
 	glBindVertexArray(0);
 
