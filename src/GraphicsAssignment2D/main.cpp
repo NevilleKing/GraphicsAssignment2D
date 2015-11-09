@@ -15,6 +15,8 @@
 
 #include <GL/glew.h>
 #include <SDL.h>
+
+#include <chrono> // time related stuff
 // end::includes[]
 
 // tag::using[]
@@ -23,6 +25,7 @@
 using std::cout;
 using std::endl;
 using std::max;
+using namespace std::chrono;
 // end::using[]
 
 
@@ -64,6 +67,7 @@ const std::string strFragmentShader = R"(
 // tag::ourVariables[]
 //our variables
 bool done = false;
+high_resolution_clock::time_point timePrev;
 
 //the data about our geometry
 const GLfloat vertexData[] = {
@@ -80,7 +84,7 @@ const GLfloat vertexData[] = {
 // offset
 GLfloat offsetLeftBat[] = { -0.95, 0.0 };
 GLfloat offsetRightBat[] = { 0.9, 0.0 };
-GLfloat offsetUpdateSpeed = 1.0;
+GLfloat offsetUpdateSpeed = 1.3;
 
 // directions of paddles
 GLfloat leftPaddleDirection = 0.0f;
@@ -328,6 +332,8 @@ void loadAssets()
 	initializeVertexBuffer(); //load data into a vertex buffer
 
 	cout << "Loaded Assets OK!\n";
+
+	timePrev = high_resolution_clock::now(); // set the last time
 }
 // end::loadAssets[]
 
@@ -405,14 +411,32 @@ void handleInput()
 }
 // end::handleInput[]
 
+// Get Delta Function - used to make sure the animation is smooth on all computers
+GLdouble getDelta()
+{
+	auto timeCurrent = high_resolution_clock::now();
+
+	auto timeDiff = duration_cast<nanoseconds>(timeCurrent - timePrev);
+
+	GLdouble delta = timeDiff.count();
+
+	delta /= 1000000000;
+
+	timePrev = timeCurrent;
+
+	return delta;
+}
+
 // tag::updateSimulation[]
 void updateSimulation(double simLength = 0.02) //update simulation with an amount of time to simulate for (in seconds)
 {
 	//WARNING - we should calculate an appropriate amount of time to simulate - not always use a constant amount of time
 			// see, for example, http://headerphile.blogspot.co.uk/2014/07/part-9-no-more-delays.html
 
-	offsetLeftBat[1] += (leftPaddleDirection * offsetUpdateSpeed * simLength); // update the left bat location
-	offsetRightBat[1] += (rightPaddleDirection * offsetUpdateSpeed * simLength); // update the right bat location
+	GLdouble delta = getDelta();
+
+	offsetLeftBat[1] += (leftPaddleDirection * offsetUpdateSpeed * delta); // update the left bat location
+	offsetRightBat[1] += (rightPaddleDirection * offsetUpdateSpeed * delta); // update the right bat location
 }
 // end::updateSimulation[]
 
