@@ -80,7 +80,12 @@ const GLfloat vertexData[] = {
 // offset
 GLfloat offsetLeftBat[] = { -0.95, 0.0 };
 GLfloat offsetRightBat[] = { 0.9, 0.0 };
-GLfloat offsetUpdateSpeed[] = { 0.1, 0.1 };
+GLfloat offsetUpdateSpeed = 1.0;
+
+// directions of paddles
+GLfloat leftPaddleDirection = 0.0f;
+GLfloat rightPaddleDirection = 0.0f;
+
 
 //the color we'll pass to the GLSL
 GLfloat color[] = { 1.0f, 1.0f, 1.0f }; //using different values from CPU and static GLSL examples, to make it clear this is working
@@ -362,6 +367,37 @@ void handleInput()
 				{
 					//hit escape to exit
 					case SDLK_ESCAPE: done = true;
+						break;
+					case SDLK_w:
+						leftPaddleDirection += 1.0;
+						break;
+					case SDLK_s:
+						leftPaddleDirection -= 1.0;
+						break;
+					case SDLK_UP:
+						rightPaddleDirection += 1.0;
+						break;
+					case SDLK_DOWN:
+						rightPaddleDirection -= 1.0;
+						break;
+				}
+			break;
+		case SDL_KEYUP:
+			if (!event.key.repeat)
+				switch (event.key.keysym.sym)
+				{
+				case SDLK_w:
+					leftPaddleDirection -= 1.0;
+					break;
+				case SDLK_s:
+					leftPaddleDirection += 1.0;
+					break;
+				case SDLK_UP:
+					rightPaddleDirection -= 1.0;
+					break;
+				case SDLK_DOWN:
+					rightPaddleDirection += 1.0;
+					break;
 				}
 			break;
 		}
@@ -375,7 +411,8 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 	//WARNING - we should calculate an appropriate amount of time to simulate - not always use a constant amount of time
 			// see, for example, http://headerphile.blogspot.co.uk/2014/07/part-9-no-more-delays.html
 
-	//CHANGE ME
+	offsetLeftBat[1] += (leftPaddleDirection * offsetUpdateSpeed * simLength); // update the left bat location
+	offsetRightBat[1] += (rightPaddleDirection * offsetUpdateSpeed * simLength); // update the right bat location
 }
 // end::updateSimulation[]
 
