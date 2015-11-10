@@ -78,7 +78,14 @@ const GLfloat vertexData[] = {
 	0.050f,	-0.200f,
 	0.000f, 0.200f, // 2nd triangle
 	0.050f, 0.200f,
-	0.050f, -0.200f
+	0.050f, -0.200f,
+// Ball
+	-0.100f, 0.100f, // 1st triangle
+	-0.100f, -0.100f,
+	0.100f, 0.100f,
+	0.100f, 0.100f, // 2nd triangle
+	-0.100f, -0.100f,
+	0.100f, -0.100f
 };
 
 // offset
@@ -139,7 +146,7 @@ void createWindow()
 	const char *exeNameCStr = exeNameEnd.c_str();
 
 	//create window
-	win = SDL_CreateWindow(exeNameCStr, 100, 100, 1000, 600, SDL_WINDOW_OPENGL); //same height and width makes the window square ...
+	win = SDL_CreateWindow(exeNameCStr, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1000, 600, SDL_WINDOW_OPENGL); //same height and width makes the window square ...
 
 	//error handling
 	if (win == nullptr)
