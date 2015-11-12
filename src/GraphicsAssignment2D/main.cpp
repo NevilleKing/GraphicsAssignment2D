@@ -486,7 +486,7 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 	offsetRightBat[1] = clamp(offsetRightBat[1], paddleBounds[1], paddleBounds[0]);
 
 	// update ball position
-	offsetBall[0] += (ballSpeed * delta);
+	offsetBall[0] += (ballSpeed * delta * 0.5);
 	offsetBall[1] += (ballSpeed * delta);
 }
 // end::updateSimulation[]
