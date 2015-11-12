@@ -97,11 +97,14 @@ GLfloat offsetLeftBat[] = { -0.95, 0.0 };
 GLfloat offsetRightBat[] = { 0.9, 0.0 };
 GLfloat offsetUpdateSpeed = 1.3;
 
+GLfloat offsetBall[] = { 0.0, 0.0 };
+GLfloat ballSpeed = 0.3;
+
 GLfloat paddleBounds[] = { 0.8, -0.8 };
 
 // directions of paddles - only needs up and down
-GLfloat leftPaddleDirection = 0.0f;
-GLfloat rightPaddleDirection = 0.0f;
+GLfloat leftPaddleDirection = 0.0;
+GLfloat rightPaddleDirection = 0.0;
 
 
 //the color we'll pass to the GLSL
@@ -481,6 +484,10 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 	
 	offsetLeftBat[1] = clamp(offsetLeftBat[1], paddleBounds[1], paddleBounds[0]);
 	offsetRightBat[1] = clamp(offsetRightBat[1], paddleBounds[1], paddleBounds[0]);
+
+	// update ball position
+	offsetBall[0] += (ballSpeed * delta);
+	offsetBall[1] += (ballSpeed * delta);
 }
 // end::updateSimulation[]
 
@@ -515,7 +522,7 @@ void render()
 
 	glBindVertexArray(ballVAO);
 
-	glUniform2f(offsetLocation, 0.0, 0.0); // update the position of the bat
+	glUniform2f(offsetLocation, offsetBall[0], offsetBall[1]); // update the position of the bat
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
