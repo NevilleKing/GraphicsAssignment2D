@@ -79,13 +79,17 @@ const GLfloat vertexData[] = {
 	0.000f, 0.200f, // 2nd triangle
 	0.050f, 0.200f,
 	0.050f, -0.200f,
-// Ball
-	-0.100f, 0.100f, // 1st triangle
-	-0.100f, -0.100f,
-	0.100f, 0.100f,
-	0.100f, 0.100f, // 2nd triangle
-	-0.100f, -0.100f,
-	0.100f, -0.100f
+};
+
+const GLfloat ballVertexData[] = {
+	// Ball
+	//  X       Y
+	-0.025f, 0.050f, // 1st triangle
+	-0.025f, -0.050f,
+	0.025f, 0.050f,
+	0.025f, 0.050f, // 2nd triangle
+	-0.025f, -0.050f,
+	0.025f, -0.050f
 };
 
 // offset
@@ -95,7 +99,7 @@ GLfloat offsetUpdateSpeed = 1.3;
 
 GLfloat paddleBounds[] = { 0.8, -0.8 };
 
-// directions of paddles
+// directions of paddles - only needs up and down
 GLfloat leftPaddleDirection = 0.0f;
 GLfloat rightPaddleDirection = 0.0f;
 
@@ -112,6 +116,9 @@ GLint offsetLocation;
 
 GLuint vertexDataBufferObject;
 GLuint vertexArrayObject;
+
+GLuint ballDBO;
+GLuint ballVAO;
 
 // end::ourVariables[]
 
@@ -307,6 +314,10 @@ void initializeVertexArrayObject()
 	glGenVertexArrays(1, &vertexArrayObject); //create a Vertex Array Object
 	cout << "Vertex Array Object created OK! GLUint is: " << vertexArrayObject << std::endl;
 
+	glGenVertexArrays(1, &ballVAO); //create a Vertex Array Object
+	cout << "Ball Vertex Array Object created OK! GLUint is: " << ballVAO << std::endl;
+
+
 	glBindVertexArray(vertexArrayObject); //make the just created vertexArrayObject the active one
 
 		glBindBuffer(GL_ARRAY_BUFFER, vertexDataBufferObject); //bind vertexDataBufferObject
@@ -314,6 +325,15 @@ void initializeVertexArrayObject()
 		glEnableVertexAttribArray(positionLocation); //enable attribute at index positionLocation
 
 		glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 0, 0); //specify that position data contains four floats per vertex, and goes into attribute index positionLocation
+
+	glBindVertexArray(ballVAO); //make the just created vertexArrayObject the active one
+
+		glBindBuffer(GL_ARRAY_BUFFER, ballDBO); //bind vertexDataBufferObject
+
+		glEnableVertexAttribArray(positionLocation); //enable attribute at index positionLocation
+
+		glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 0, 0); //specify that position data contains four floats per vertex, and goes into attribute index positionLocation
+
 
 	glBindVertexArray(0); //unbind the vertexArrayObject so we can't change it
 
@@ -333,6 +353,13 @@ void initializeVertexBuffer()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	cout << "vertexDataBufferObject created OK! GLUint is: " << vertexDataBufferObject << std::endl;
+
+	glGenBuffers(1, &ballDBO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, ballDBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(ballVertexData), ballVertexData, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	cout << "ball vertexDataBufferObject created OK! GLUint is: " << vertexDataBufferObject << std::endl;
 
 	initializeVertexArrayObject();
 }
@@ -483,6 +510,12 @@ void render()
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glUniform2f(offsetLocation, offsetRightBat[0], offsetRightBat[1]); // update the position of the bat
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glBindVertexArray(ballVAO);
+
+	glUniform2f(offsetLocation, 0.0, 0.0); // update the position of the bat
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
