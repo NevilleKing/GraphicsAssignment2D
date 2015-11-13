@@ -98,10 +98,10 @@ GLfloat offsetRightBat[] = { 0.9, 0.0 };
 GLfloat offsetUpdateSpeed = 1.3;
 
 GLfloat offsetBall[] = { 0.0, 0.0 };
-GLfloat ballSpeed = 0.3;
+GLfloat ballSpeed[] = { 0.2, 0.4 }; // (x direction, y direction)
 
-GLfloat paddleBounds = 0.8;
-GLfloat ballBounds[] = { 0.975, 0.95 };
+GLfloat paddleBounds = 0.8; // only need one (as paddle only moves up and down)
+GLfloat ballBounds[] = { 0.975, 0.95 }; // x & y bounds (takes account of the size of the ball)
 
 // directions of paddles - only needs up and down
 GLfloat leftPaddleDirection = 0.0;
@@ -135,9 +135,8 @@ GLfloat clamp(GLfloat value, GLfloat min, GLfloat max)
 	return std::max(std::min(value, max), min);
 }
 
-bool checkBallBounds(GLfloat value, GLfloat min, GLfloat max)
+bool checkBounds(GLfloat value, GLfloat min, GLfloat max)
 {
-	frameLine += std::to_string(value) + " >= " + std::to_string(max);
 	if (value >= max || value <= min) return true;
 	else return false;
 }
@@ -479,6 +478,14 @@ GLdouble getDelta()
 	return delta;
 }
 
+void checkBallBounds(int index)
+{
+	if (checkBounds(offsetBall[index], -ballBounds[index], ballBounds[index])) // check if the ball intersects with the boundary of the screen
+	{
+		ballSpeed[index] = -ballSpeed[index]; // if so reverse the ball direction
+	}
+}
+
 // tag::updateSimulation[]
 void updateSimulation(double simLength = 0.02) //update simulation with an amount of time to simulate for (in seconds)
 {
@@ -493,13 +500,13 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 	offsetLeftBat[1] = clamp(offsetLeftBat[1], -paddleBounds, paddleBounds);
 	offsetRightBat[1] = clamp(offsetRightBat[1], -paddleBounds, paddleBounds);
 
+	// check ball boundary
+	checkBallBounds(0); // left & right of screen
+	checkBallBounds(1); // top & bottom
+
 	// update ball position
-	if (checkBallBounds(offsetBall[1], -ballBounds[1], ballBounds[1]))
-	{
-		ballSpeed = -ballSpeed;
-	}
-	//offsetBall[0] += (ballSpeed * delta * 0.5);
-	offsetBall[1] += (ballSpeed * delta);
+	offsetBall[0] += (ballSpeed[0] * delta);
+	offsetBall[1] += (ballSpeed[1] * delta);
 }
 // end::updateSimulation[]
 
