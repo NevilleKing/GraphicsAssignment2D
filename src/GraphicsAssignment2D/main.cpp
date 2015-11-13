@@ -100,8 +100,8 @@ GLfloat offsetUpdateSpeed = 1.3;
 GLfloat offsetBall[] = { 0.0, 0.0 };
 GLfloat ballSpeed[] = { 0.2, 0.4 }; // (x direction, y direction)
 
-GLfloat paddleBounds = 0.8; // only need one (as paddle only moves up and down)
-GLfloat ballBounds[] = { 0.975, 0.95 }; // x & y bounds (takes account of the size of the ball)
+const GLfloat paddleDimensions[] = { 0.2, 0.05 }; // width and height needed for collision detection (width is full width, height is half (because of the centre of the shape))
+const GLfloat ballDimensions[] = { 0.025, 0.05 }; // half of width and height of ball
 
 // directions of paddles - only needs up and down
 GLfloat leftPaddleDirection = 0.0;
@@ -480,7 +480,7 @@ GLdouble getDelta()
 
 bool checkBallBounds(int index)
 {
-	if (checkBounds(offsetBall[index], -ballBounds[index], ballBounds[index])) // check if the ball intersects with the boundary of the screen
+	if (checkBounds(offsetBall[index], -1+ballDimensions[index], 1- ballDimensions[index])) // check if the ball intersects with the boundary of the screen
 	{
 		ballSpeed[index] = -ballSpeed[index]; // if so reverse the ball direction
 		return true;
@@ -499,8 +499,8 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 	offsetLeftBat[1] += (leftPaddleDirection * offsetUpdateSpeed * delta); // update the left bat location
 	offsetRightBat[1] += (rightPaddleDirection * offsetUpdateSpeed * delta); // update the right bat location
 	
-	offsetLeftBat[1] = clamp(offsetLeftBat[1], -paddleBounds, paddleBounds);
-	offsetRightBat[1] = clamp(offsetRightBat[1], -paddleBounds, paddleBounds);
+	offsetLeftBat[1] = clamp(offsetLeftBat[1], -1+paddleDimensions[1], 1-paddleDimensions[1]);
+	offsetRightBat[1] = clamp(offsetRightBat[1], -1 + paddleDimensions[1], 1 - paddleDimensions[1]);
 
 	// check ball boundary
 	checkBallBounds(0); // left & right of screen
