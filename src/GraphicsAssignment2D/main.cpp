@@ -100,7 +100,8 @@ GLfloat offsetUpdateSpeed = 1.3;
 GLfloat offsetBall[] = { 0.0, 0.0 };
 GLfloat ballSpeed = 0.3;
 
-GLfloat paddleBounds[] = { 0.8, -0.8 };
+GLfloat paddleBounds = 0.8;
+GLfloat ballBounds[] = { 0.975, 0.95 };
 
 // directions of paddles - only needs up and down
 GLfloat leftPaddleDirection = 0.0;
@@ -132,6 +133,13 @@ GLuint ballVAO;
 GLfloat clamp(GLfloat value, GLfloat min, GLfloat max)
 {
 	return std::max(std::min(value, max), min);
+}
+
+bool checkBallBounds(GLfloat value, GLfloat min, GLfloat max)
+{
+	frameLine += std::to_string(value) + " >= " + std::to_string(max);
+	if (value >= max || value <= min) return true;
+	else return false;
 }
 
 // tag::initialise[]
@@ -482,11 +490,15 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 	offsetLeftBat[1] += (leftPaddleDirection * offsetUpdateSpeed * delta); // update the left bat location
 	offsetRightBat[1] += (rightPaddleDirection * offsetUpdateSpeed * delta); // update the right bat location
 	
-	offsetLeftBat[1] = clamp(offsetLeftBat[1], paddleBounds[1], paddleBounds[0]);
-	offsetRightBat[1] = clamp(offsetRightBat[1], paddleBounds[1], paddleBounds[0]);
+	offsetLeftBat[1] = clamp(offsetLeftBat[1], -paddleBounds, paddleBounds);
+	offsetRightBat[1] = clamp(offsetRightBat[1], -paddleBounds, paddleBounds);
 
 	// update ball position
-	offsetBall[0] += (ballSpeed * delta * 0.5);
+	if (checkBallBounds(offsetBall[1], -ballBounds[1], ballBounds[1]))
+	{
+		ballSpeed = -ballSpeed;
+	}
+	//offsetBall[0] += (ballSpeed * delta * 0.5);
 	offsetBall[1] += (ballSpeed * delta);
 }
 // end::updateSimulation[]
