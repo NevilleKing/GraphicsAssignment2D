@@ -478,12 +478,14 @@ GLdouble getDelta()
 	return delta;
 }
 
-void checkBallBounds(int index)
+bool checkBallBounds(int index)
 {
 	if (checkBounds(offsetBall[index], -ballBounds[index], ballBounds[index])) // check if the ball intersects with the boundary of the screen
 	{
 		ballSpeed[index] = -ballSpeed[index]; // if so reverse the ball direction
+		return true;
 	}
+	else return false;
 }
 
 // tag::updateSimulation[]
