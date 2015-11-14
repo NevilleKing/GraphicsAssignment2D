@@ -107,6 +107,10 @@ const GLfloat ballDimensions[] = { 0.025, 0.05 }; // half of width and height of
 GLfloat leftPaddleDirection = 0.0;
 GLfloat rightPaddleDirection = 0.0;
 
+// colliding bools
+bool collidingWithSides[] = { false, false }; // if ball is colliding with left/right & top/bottom
+bool collidingWithPaddle = false; // if ball is colliding with paddle
+
 
 //the color we'll pass to the GLSL
 GLfloat color[] = { 1.0f, 1.0f, 1.0f }; //using different values from CPU and static GLSL examples, to make it clear this is working
@@ -478,26 +482,42 @@ GLdouble getDelta()
 	return delta;
 }
 
+// Check if the ball is colliding with the edges of the screen
 bool checkBallBounds(int index)
 {
 	if (checkBounds(offsetBall[index], -1+ballDimensions[index], 1- ballDimensions[index])) // check if the ball intersects with the boundary of the screen
 	{
-		ballSpeed[index] = -ballSpeed[index]; // if so reverse the ball direction
+		if (!collidingWithSides[index]) // stops the ball getting stuck in the wall
+		{
+			ballSpeed[index] = -ballSpeed[index]; // if so reverse the ball direction
+			collidingWithSides[index] = true;
+		}
 		return true;
 	}
-	else return false;
+	else
+	{
+		collidingWithSides[index] = false;
+		return false;
+	}
 }
 
 void checkBallPaddleCollision(bool leftPaddle)
 {
 	if (leftPaddle)
 	{
-		if ((offsetLeftBat[0] + paddleDimensions[0]) >= (offsetBall[0] - ballDimensions[0]) &&
+		if ((offsetLeftBat[0] + paddleDimensions[0]) >= (offsetBall[0] - ballDimensions[0]) && // if the left part of the ball is intersecting with the bat x position
 			offsetLeftBat[0] <= offsetBall[0] - ballDimensions[0] &&
-			(offsetLeftBat[1] + paddleDimensions[1] + (2*ballDimensions[1])) >= (offsetBall[1] + ballDimensions[1]) &&
+			(offsetLeftBat[1] + paddleDimensions[1] + (2*ballDimensions[1])) >= (offsetBall[1] + ballDimensions[1]) && // if the left part of the ball is colliding with the bat y postion
 			(offsetLeftBat[1] - paddleDimensions[1] - (2 * ballDimensions[1])) <= offsetBall[1] - ballDimensions[1])
 		{
-			ballSpeed[0] = -ballSpeed[0];
+			if (!collidingWithPaddle) { // stops the ball getting stuck in the paddle
+				ballSpeed[0] = -ballSpeed[0]; // reverse the ball x direction
+				collidingWithPaddle = true;
+			}
+		}
+		else
+		{
+			collidingWithPaddle = false;
 		}
 	}
 	else
@@ -507,7 +527,14 @@ void checkBallPaddleCollision(bool leftPaddle)
 			(offsetRightBat[1] + paddleDimensions[1] + (2 * ballDimensions[1])) >= (offsetBall[1] + ballDimensions[1]) &&
 			(offsetRightBat[1] - paddleDimensions[1] - (2 * ballDimensions[1])) <= offsetBall[1] - ballDimensions[1])
 		{
-			ballSpeed[0] = -ballSpeed[0];
+			if (!collidingWithPaddle) {
+				ballSpeed[0] = -ballSpeed[0];
+				collidingWithPaddle = true;
+			}
+		}
+		else 
+		{
+			collidingWithPaddle = false;
 		}
 	}
 }
@@ -535,7 +562,7 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 	checkBallBounds(1); // top & bottom
 
 	// check for collision with paddles
-	if (offsetBall[0] > 0.0)
+	if (offsetBall[0] > 0.0) // only check between one of the paddles at a time
 		checkBallPaddleCollision(false);
 	else
 		checkBallPaddleCollision(true);
