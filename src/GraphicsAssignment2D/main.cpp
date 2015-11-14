@@ -98,9 +98,9 @@ GLfloat offsetRightBat[] = { 0.9, 0.0 };
 GLfloat offsetUpdateSpeed = 1.3;
 
 GLfloat offsetBall[] = { 0.0, 0.0 };
-GLfloat ballSpeed[] = { 0.2, 0.4 }; // (x direction, y direction)
+GLfloat ballSpeed[] = { 0.4, 0.8 }; // (x direction, y direction)
 
-const GLfloat paddleDimensions[] = { 0.2, 0.05 }; // width and height needed for collision detection (width is full width, height is half (because of the centre of the shape))
+const GLfloat paddleDimensions[] = { 0.05, 0.2 }; // width and height needed for collision detection (width is full width, height is half (because of the centre of the shape))
 const GLfloat ballDimensions[] = { 0.025, 0.05 }; // half of width and height of ball
 
 // directions of paddles - only needs up and down
@@ -488,6 +488,30 @@ bool checkBallBounds(int index)
 	else return false;
 }
 
+void checkBallPaddleCollision(bool leftPaddle)
+{
+	if (leftPaddle)
+	{
+		if ((offsetLeftBat[0] + paddleDimensions[0]) >= (offsetBall[0] - ballDimensions[0]) &&
+			offsetLeftBat[0] <= offsetBall[0] - ballDimensions[0] &&
+			(offsetLeftBat[1] + paddleDimensions[1] + (2*ballDimensions[1])) >= (offsetBall[1] + ballDimensions[1]) &&
+			(offsetLeftBat[1] - paddleDimensions[1] - (2 * ballDimensions[1])) <= offsetBall[1] - ballDimensions[1])
+		{
+			ballSpeed[0] = -ballSpeed[0];
+		}
+	}
+	else
+	{
+		if (offsetRightBat[0] <= (offsetBall[0] + ballDimensions[0]) &&
+			(offsetRightBat[0] + paddleDimensions[0]) >= offsetBall[0] + ballDimensions[0] &&
+			(offsetRightBat[1] + paddleDimensions[1] + (2 * ballDimensions[1])) >= (offsetBall[1] + ballDimensions[1]) &&
+			(offsetRightBat[1] - paddleDimensions[1] - (2 * ballDimensions[1])) <= offsetBall[1] - ballDimensions[1])
+		{
+			ballSpeed[0] = -ballSpeed[0];
+		}
+	}
+}
+
 // tag::updateSimulation[]
 void updateSimulation(double simLength = 0.02) //update simulation with an amount of time to simulate for (in seconds)
 {
@@ -502,13 +526,19 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 	offsetLeftBat[1] = clamp(offsetLeftBat[1], -1+paddleDimensions[1], 1-paddleDimensions[1]);
 	offsetRightBat[1] = clamp(offsetRightBat[1], -1 + paddleDimensions[1], 1 - paddleDimensions[1]);
 
+	// update ball position
+	offsetBall[0] += (ballSpeed[0] * delta);
+	offsetBall[1] += (ballSpeed[1] * delta);
+
 	// check ball boundary
 	checkBallBounds(0); // left & right of screen
 	checkBallBounds(1); // top & bottom
 
-	// update ball position
-	offsetBall[0] += (ballSpeed[0] * delta);
-	offsetBall[1] += (ballSpeed[1] * delta);
+	// check for collision with paddles
+	if (offsetBall[0] > 0.0)
+		checkBallPaddleCollision(false);
+	else
+		checkBallPaddleCollision(true);
 }
 // end::updateSimulation[]
 
