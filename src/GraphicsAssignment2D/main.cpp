@@ -111,6 +111,8 @@ GLfloat rightPaddleDirection = 0.0;
 bool collidingWithSides[] = { false, false }; // if ball is colliding with left/right & top/bottom
 bool collidingWithPaddle = false; // if ball is colliding with paddle
 
+// score
+int score[] = { 0, 0 }; // (left score, right score)
 
 //the color we'll pass to the GLSL
 GLfloat color[] = { 1.0f, 1.0f, 1.0f }; //using different values from CPU and static GLSL examples, to make it clear this is working
@@ -539,6 +541,15 @@ void checkBallPaddleCollision(bool leftPaddle)
 	}
 }
 
+void resetBall()
+{
+	// reset the ball location
+	offsetBall[0] = 0.0;
+	offsetBall[1] = 0.0;
+
+	// add score to correct opposing player
+}
+
 // tag::updateSimulation[]
 void updateSimulation(double simLength = 0.02) //update simulation with an amount of time to simulate for (in seconds)
 {
@@ -558,7 +569,9 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 	offsetBall[1] += (ballSpeed[1] * delta);
 
 	// check ball boundary
-	checkBallBounds(0); // left & right of screen
+	if (checkBallBounds(0)) { // left & right of screen
+		resetBall();
+	}
 	checkBallBounds(1); // top & bottom
 
 	// check for collision with paddles
