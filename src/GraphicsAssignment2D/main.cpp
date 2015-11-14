@@ -111,7 +111,7 @@ GLfloat offsetUpdateSpeed = 1.3;
 GLfloat offsetBall[] = { 0.0, 0.0 };
 GLfloat ballSpeed[] = { 0.4, 0.8 }; // (x direction, y direction)
 
-GLfloat scoreOffset[] = { 0.0, 0.9 };
+GLfloat scoreOffset[] = { 0.0, -0.95 };
 
 const GLfloat paddleDimensions[] = { 0.05, 0.2 }; // width and height needed for collision detection (width is full width, height is half (because of the centre of the shape))
 const GLfloat ballDimensions[] = { 0.025, 0.05 }; // half of width and height of ball
@@ -658,6 +658,8 @@ void render()
 	glBindVertexArray(scoreVAO);
 
 	glUniform2f(offsetLocation, scoreOffset[0], scoreOffset[1]); // update the position of the bat
+
+	glUniform3f(colorLocation, 1.0, 0.0, 0.0);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
