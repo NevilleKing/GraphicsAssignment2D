@@ -92,6 +92,17 @@ const GLfloat ballVertexData[] = {
 	0.025f, -0.050f
 };
 
+const GLfloat scoreVertexData[] = {
+	// Ball
+	//  X       Y
+	-0.025f, 0.025f, // 1st triangle
+	-0.025f, -0.025f,
+	0.025f, 0.025f,
+	0.025f, 0.025f, // 2nd triangle
+	-0.025f, -0.025f,
+	0.025f, -0.025f
+};
+
 // offset
 GLfloat offsetLeftBat[] = { -0.95, 0.0 };
 GLfloat offsetRightBat[] = { 0.9, 0.0 };
@@ -99,6 +110,8 @@ GLfloat offsetUpdateSpeed = 1.3;
 
 GLfloat offsetBall[] = { 0.0, 0.0 };
 GLfloat ballSpeed[] = { 0.4, 0.8 }; // (x direction, y direction)
+
+GLfloat scoreOffset[] = { 0.0, 0.9 };
 
 const GLfloat paddleDimensions[] = { 0.05, 0.2 }; // width and height needed for collision detection (width is full width, height is half (because of the centre of the shape))
 const GLfloat ballDimensions[] = { 0.025, 0.05 }; // half of width and height of ball
@@ -129,6 +142,9 @@ GLuint vertexArrayObject;
 
 GLuint ballDBO;
 GLuint ballVAO;
+
+GLuint scoreDBO;
+GLuint scoreVAO;
 
 // end::ourVariables[]
 
@@ -333,6 +349,9 @@ void initializeVertexArrayObject()
 	glGenVertexArrays(1, &ballVAO); //create a Vertex Array Object
 	cout << "Ball Vertex Array Object created OK! GLUint is: " << ballVAO << std::endl;
 
+	glGenVertexArrays(1, &scoreVAO); //create a Vertex Array Object
+	cout << "Ball Vertex Array Object created OK! GLUint is: " << scoreVAO << std::endl;
+
 
 	glBindVertexArray(vertexArrayObject); //make the just created vertexArrayObject the active one
 
@@ -345,6 +364,14 @@ void initializeVertexArrayObject()
 	glBindVertexArray(ballVAO); //make the just created vertexArrayObject the active one
 
 		glBindBuffer(GL_ARRAY_BUFFER, ballDBO); //bind vertexDataBufferObject
+
+		glEnableVertexAttribArray(positionLocation); //enable attribute at index positionLocation
+
+		glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 0, 0); //specify that position data contains four floats per vertex, and goes into attribute index positionLocation
+
+	glBindVertexArray(scoreVAO); //make the just created vertexArrayObject the active one
+
+		glBindBuffer(GL_ARRAY_BUFFER, scoreDBO); //bind vertexDataBufferObject
 
 		glEnableVertexAttribArray(positionLocation); //enable attribute at index positionLocation
 
@@ -375,7 +402,14 @@ void initializeVertexBuffer()
 	glBindBuffer(GL_ARRAY_BUFFER, ballDBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(ballVertexData), ballVertexData, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	cout << "ball vertexDataBufferObject created OK! GLUint is: " << vertexDataBufferObject << std::endl;
+	cout << "ball vertexDataBufferObject created OK! GLUint is: " << ballDBO << std::endl;
+
+	glGenBuffers(1, &scoreDBO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, scoreDBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(scoreVertexData), scoreVertexData, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	cout << "score vertexDataBufferObject created OK! GLUint is: " << scoreDBO << std::endl;
 
 	initializeVertexArrayObject();
 }
@@ -618,6 +652,12 @@ void render()
 	glBindVertexArray(ballVAO);
 
 	glUniform2f(offsetLocation, offsetBall[0], offsetBall[1]); // update the position of the bat
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glBindVertexArray(scoreVAO);
+
+	glUniform2f(offsetLocation, scoreOffset[0], scoreOffset[1]); // update the position of the bat
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
