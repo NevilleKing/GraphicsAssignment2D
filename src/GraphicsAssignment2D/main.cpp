@@ -95,12 +95,12 @@ const GLfloat ballVertexData[] = {
 const GLfloat scoreVertexData[] = {
 	// Ball
 	//  X       Y
-	-0.025f, 0.025f, // 1st triangle
-	-0.025f, -0.025f,
-	0.025f, 0.025f,
-	0.025f, 0.025f, // 2nd triangle
-	-0.025f, -0.025f,
-	0.025f, -0.025f
+	-0.0125f, 0.025f, // 1st triangle
+	-0.0125f, -0.025f,
+	0.0125f, 0.025f,
+	0.0125f, 0.025f, // 2nd triangle
+	-0.0125f, -0.025f,
+	0.0125f, -0.025f
 };
 
 // offset
@@ -112,7 +112,7 @@ GLfloat offsetBall[] = { 0.0, 0.0 };
 GLfloat ballSpeed[] = { 0.4, 0.8 }; // (x direction, y direction)
 
 GLfloat scoreOffset[] = { 0.0, -0.95 };
-const GLfloat SCORE_X_CHANGE = 0.07; // amount of change in the x axis with each new score
+const GLfloat SCORE_X_CHANGE = 0.04; // amount of change in the x axis with each new score
 
 const GLfloat paddleDimensions[] = { 0.05, 0.2 }; // width and height needed for collision detection (width is full width, height is half (because of the centre of the shape))
 const GLfloat ballDimensions[] = { 0.025, 0.05 }; // half of width and height of ball
@@ -633,7 +633,7 @@ void preRender()
 void renderScore()
 {
 	// LEFT SCORE
-	scoreOffset[0] = -0.95;
+	scoreOffset[0] = -0.98;
 	glUniform2f(offsetLocation, scoreOffset[0], scoreOffset[1]);
 
 	for (int i = 0; i < score[0]; i++)
@@ -644,7 +644,7 @@ void renderScore()
 	}
 
 	// RIGHT SCORE
-	scoreOffset[0] = 0.95;
+	scoreOffset[0] = 0.98;
 	glUniform2f(offsetLocation, scoreOffset[0], scoreOffset[1]);
 
 	for (int i = 0; i < score[1]; i++)
