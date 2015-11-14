@@ -543,11 +543,15 @@ void checkBallPaddleCollision(bool leftPaddle)
 
 void resetBall()
 {
+	// add score to correct opposing player
+	if (offsetBall[0] > 0.0)
+		score[0]++;
+	else
+		score[1]++;
+
 	// reset the ball location
 	offsetBall[0] = 0.0;
 	offsetBall[1] = 0.0;
-
-	// add score to correct opposing player
 }
 
 // tag::updateSimulation[]
@@ -629,6 +633,7 @@ void postRender()
 {
 	SDL_GL_SwapWindow(win);; //present the frame buffer to the display (swapBuffers)
 	frameLine += "Frame: " + std::to_string(frameCount++);
+	frameLine += " LEFT: " + std::to_string(score[0]) + " Right: " + std::to_string(score[1]);
 	cout << "\r" << frameLine << std::flush;
 	frameLine = "";
 }
