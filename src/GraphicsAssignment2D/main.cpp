@@ -112,6 +112,7 @@ GLfloat offsetBall[] = { 0.0, 0.0 };
 GLfloat ballSpeed[] = { 0.4, 0.8 }; // (x direction, y direction)
 
 GLfloat scoreOffset[] = { 0.0, -0.95 };
+const GLfloat SCORE_X_CHANGE = 0.07; // amount of change in the x axis with each new score
 
 const GLfloat paddleDimensions[] = { 0.05, 0.2 }; // width and height needed for collision detection (width is full width, height is half (because of the centre of the shape))
 const GLfloat ballDimensions[] = { 0.025, 0.05 }; // half of width and height of ball
@@ -629,6 +630,31 @@ void preRender()
 }
 // end::preRender[]
 
+void renderScore()
+{
+	// LEFT SCORE
+	scoreOffset[0] = -0.95;
+	glUniform2f(offsetLocation, scoreOffset[0], scoreOffset[1]);
+
+	for (int i = 0; i < score[0]; i++)
+	{
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		scoreOffset[0] += SCORE_X_CHANGE;
+		glUniform2f(offsetLocation, scoreOffset[0], scoreOffset[1]);
+	}
+
+	// RIGHT SCORE
+	scoreOffset[0] = 0.95;
+	glUniform2f(offsetLocation, scoreOffset[0], scoreOffset[1]);
+
+	for (int i = 0; i < score[1]; i++)
+	{
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		scoreOffset[0] -= SCORE_X_CHANGE;
+		glUniform2f(offsetLocation, scoreOffset[0], scoreOffset[1]);
+	}
+}
+
 // tag::render[]
 void render()
 {
@@ -657,11 +683,9 @@ void render()
 
 	glBindVertexArray(scoreVAO);
 
-	glUniform2f(offsetLocation, scoreOffset[0], scoreOffset[1]); // update the position of the bat
-
 	glUniform3f(colorLocation, 1.0, 0.0, 0.0);
 
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	renderScore();
 
 	glBindVertexArray(0);
 
