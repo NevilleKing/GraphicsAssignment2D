@@ -384,9 +384,9 @@ void initializeVertexArrayObject()
 
 		glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GLfloat), (void*)0); //specify that position data contains four floats per vertex, and goes into attribute index positionLocation
 
-		glEnableVertexAttribArray(textureLocation); //enable attribute at index positionLocation
+		glEnableVertexAttribArray(textureLocation); //enable attribute at index textureLocation
 
-		glVertexAttribPointer(textureLocation, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GLfloat), (void*)(2*sizeof(GLfloat))); //specify that position data contains four floats per vertex, and goes into attribute index positionLocation
+		glVertexAttribPointer(textureLocation, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GLfloat), (void*)(2*sizeof(GLfloat))); //specify that position data contains four floats per vertex, and goes into attribute index textureLocation
 
 	glBindVertexArray(ballVAO); //make the just created vertexArrayObject the active one
 
@@ -728,6 +728,8 @@ void render()
 		//alternatively, use glUnivform2fv
 		//glUniform2fv(colorLocation, 1, color); //Note: the count is 1, because we are setting a single uniform vec2 - https://www.opengl.org/wiki/GLSL_:_common_mistakes#How_to_use_glUniform
 
+	// ------------------------------ BATS
+
 	glUniform2f(offsetLocation, offsetLeftBat[0], offsetLeftBat[1]); // update the position of the bat
 
 	glBindVertexArray(vertexArrayObject);
@@ -738,11 +740,15 @@ void render()
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
+	// ------------------------------ BALL
+
 	glBindVertexArray(ballVAO);
 
-	glUniform2f(offsetLocation, offsetBall[0], offsetBall[1]); // update the position of the bat
+	glUniform2f(offsetLocation, offsetBall[0], offsetBall[1]); // update the position of the ball
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	// ------------------------------ SCORE
 
 	glBindVertexArray(scoreVAO);
 
