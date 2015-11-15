@@ -166,6 +166,14 @@ bool checkBounds(GLfloat value, GLfloat min, GLfloat max)
 	else return false;
 }
 
+GLfloat getRandomNumber(GLfloat min, GLfloat max)
+{
+	float randomNum = ((float)rand()) / (float)RAND_MAX;
+	float range = max - min;
+	float r = randomNum * range;
+	return min + r;
+}
+
 // tag::initialise[]
 void initialise()
 {
@@ -589,6 +597,16 @@ void resetBall()
 	// reset the ball location
 	offsetBall[0] = 0.0;
 	offsetBall[1] = 0.0;
+
+	// set a random speed for the ball
+	if (ballSpeed[0] < 0.0) // make sure that the ball goes the way
+		ballSpeed[0] = getRandomNumber(-1.5f, -0.5f);
+	else
+		ballSpeed[0] = getRandomNumber(0.5f, 1.5f);
+
+	do {
+		ballSpeed[1] = getRandomNumber(-1.5f, 1.5f);
+	} while (ballSpeed[1] < 0.3 && ballSpeed[1] > -0.3);
 }
 
 // tag::updateSimulation[]
@@ -599,11 +617,11 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 
 	GLdouble delta = getDelta();
 
-	if (!gameOver && (score[0] >= SCORE_LIMIT || score[1] >= SCORE_LIMIT))
+	if (!gameOver && (score[0] >= SCORE_LIMIT || score[1] >= SCORE_LIMIT)) // if the score reaches the score limit - stop the game
 	{
 		gameOver = true;
-		offsetUpdateSpeed = 0.0;
-		ballSpeed[0] = 0.0;
+		offsetUpdateSpeed = 0.0; // stop the paddles moving
+		ballSpeed[0] = 0.0; // stop the ball moving
 		ballSpeed[1] = 0.0;
 	}
 
