@@ -55,7 +55,7 @@ solution "2DGraphicsAssignment"
           libdirs {
                     "./graphics_dependencies/glew/lib/Release/Win32",
                     "./graphics_dependencies/SDL2/lib/win32",
-                    "./graphics_dependencies/SOIL/src"
+                    "./graphics_dependencies/SOIL/lib"
                   }
           configuration "linux"
                    -- should be installed as in ./graphics_dependencies/README.asciidoc
