@@ -16,6 +16,8 @@
 #include <GL/glew.h>
 #include <SDL.h>
 
+#include <SOIL.h>
+
 #include <chrono> // time related stuff
 // end::includes[]
 
@@ -42,11 +44,14 @@ std::string frameLine = "";
 const std::string strVertexShader = R"(
 	#version 330
 	in vec2 position;
+	in vec2 texcoord;
 	uniform vec2 offset;
+	out vec2 Texcoord;
 	void main()
 	{
 		vec2 trianglePos = position + offset;
 		gl_Position = vec4(trianglePos, 0.0, 1.0);
+		Texcoord = texcoord;
 	}
 )";
 // end::vertexShader[]
@@ -55,11 +60,14 @@ const std::string strVertexShader = R"(
 //string holding the **source** of our fragment shader, to save loading from a file
 const std::string strFragmentShader = R"(
 	#version 330
+	in vec2 Texcoord;
 	out vec4 outputColor;
 	uniform vec3 color;
+	uniform sampler2D tex;
 	void main()
 	{
-		 outputColor = vec4(color, 1.0f);
+		//outputColor = vec4(color, 1.0f);
+		outputColor = texture(tex, Texcoord);
 	}
 )";
 // end::fragmentShader[]
@@ -71,14 +79,14 @@ high_resolution_clock::time_point timePrev;
 
 //the data about our geometry
 const GLfloat vertexData[] = {
-//      X          Y
+//      X      Y   Texture stuff
 // Paddle
-	0.000f,	0.200f, // 1st triangle
-	0.000f,	-0.200f,
-	0.050f,	-0.200f,
-	0.000f, 0.200f, // 2nd triangle
-	0.050f, 0.200f,
-	0.050f, -0.200f,
+	0.000f,	0.200f,  0.0f, 0.0f, // 1st triangle
+	0.000f,	-0.200f, 0.0f, 1.0f,
+	0.050f,	-0.200f, 1.0f, 1.0f,
+	0.000f, 0.200f,  0.0f, 0.0f, // 2nd triangle
+	0.050f, 0.200f,  1.0f, 0.0f,
+	0.050f, -0.200f, 1.0f, 1.0f
 };
 
 const GLfloat ballVertexData[] = {
@@ -139,6 +147,7 @@ GLuint theProgram; //GLuint that we'll fill in to refer to the GLSL program (onl
 GLint positionLocation; //GLuint that we'll fill in with the location of the `position` attribute in the GLSL
 GLint colorLocation; //GLuint that we'll fill in with the location of the `color` variable in the GLSL
 GLint offsetLocation;
+GLint textureLocation;
 
 GLuint vertexDataBufferObject;
 GLuint vertexArrayObject;
@@ -148,6 +157,8 @@ GLuint ballVAO;
 
 GLuint scoreDBO;
 GLuint scoreVAO;
+
+GLuint texture;
 
 // end::ourVariables[]
 
@@ -342,6 +353,7 @@ void initializeProgram()
 	}
 
 	positionLocation = glGetAttribLocation(theProgram, "position");
+	textureLocation = glGetAttribLocation(theProgram, "texcoord");
 	colorLocation = glGetUniformLocation(theProgram, "color");
 	offsetLocation = glGetUniformLocation(theProgram, "offset");
 
@@ -370,7 +382,11 @@ void initializeVertexArrayObject()
 
 		glEnableVertexAttribArray(positionLocation); //enable attribute at index positionLocation
 
-		glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 0, 0); //specify that position data contains four floats per vertex, and goes into attribute index positionLocation
+		glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GLfloat), (void*)0); //specify that position data contains four floats per vertex, and goes into attribute index positionLocation
+
+		glEnableVertexAttribArray(textureLocation); //enable attribute at index positionLocation
+
+		glVertexAttribPointer(textureLocation, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GLfloat), (void*)(2*sizeof(GLfloat))); //specify that position data contains four floats per vertex, and goes into attribute index positionLocation
 
 	glBindVertexArray(ballVAO); //make the just created vertexArrayObject the active one
 
@@ -426,12 +442,31 @@ void initializeVertexBuffer()
 }
 // end::initializeVertexBuffer[]
 
+void initializeTextures()
+{
+	glGenTextures(1, &texture);
+
+	glActiveTexture(GL_TEXTURE0);
+	int width, height;
+	unsigned char* image = SOIL_load_image("img.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	SOIL_free_image_data(image);
+	glUniform1f(glGetUniformLocation(theProgram, "theTex"), 0);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+}
+
 // tag::loadAssets[]
 void loadAssets()
 {
 	initializeProgram(); //create GLSL Shaders, link into a GLSL program, and get IDs of attributes and variables
 
 	initializeVertexBuffer(); //load data into a vertex buffer
+
+	initializeTextures();
 
 	cout << "Loaded Assets OK!\n";
 
