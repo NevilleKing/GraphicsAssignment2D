@@ -113,6 +113,8 @@ GLfloat ballSpeed[] = { 0.4, 0.8 }; // (x direction, y direction)
 
 GLfloat scoreOffset[] = { 0.0, -0.95 };
 const GLfloat SCORE_X_CHANGE = 0.04; // amount of change in the x axis with each new score
+const GLuint SCORE_LIMIT = 5;
+bool gameOver = false;
 
 const GLfloat paddleDimensions[] = { 0.05, 0.2 }; // width and height needed for collision detection (width is full width, height is half (because of the centre of the shape))
 const GLfloat ballDimensions[] = { 0.025, 0.05 }; // half of width and height of ball
@@ -596,6 +598,14 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 			// see, for example, http://headerphile.blogspot.co.uk/2014/07/part-9-no-more-delays.html
 
 	GLdouble delta = getDelta();
+
+	if (!gameOver && (score[0] >= SCORE_LIMIT || score[1] >= SCORE_LIMIT))
+	{
+		gameOver = true;
+		offsetUpdateSpeed = 0.0;
+		ballSpeed[0] = 0.0;
+		ballSpeed[1] = 0.0;
+	}
 
 	offsetLeftBat[1] += (leftPaddleDirection * offsetUpdateSpeed * delta); // update the left bat location
 	offsetRightBat[1] += (rightPaddleDirection * offsetUpdateSpeed * delta); // update the right bat location
