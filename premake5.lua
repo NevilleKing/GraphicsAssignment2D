@@ -32,7 +32,8 @@ solution "2DGraphicsAssignment"
           configuration "windows"
           includedirs {
                         "./graphics_dependencies/SDL2/include",
-                        "./graphics_dependencies/glew/include"
+                        "./graphics_dependencies/glew/include",
+						"./graphics_dependencies/SOIL/src"
                       }
           configuration { "linux" }
           includedirs {
@@ -43,9 +44,9 @@ solution "2DGraphicsAssignment"
 
           -- what libraries need linking to
           configuration "windows"
-             links { "SDL2", "SDL2main", "opengl32", "glew32" }
+             links { "SOIL", "SDL2", "SDL2main", "opengl32", "glew32" }
           configuration "linux"
-             links { "SDL2", "SDL2main", "GL", "GLEW" }
+             links { "SOIL", "SDL2", "SDL2main", "GL", "GLEW" }
           configuration {}
 
 
@@ -53,7 +54,8 @@ solution "2DGraphicsAssignment"
           configuration "windows"
           libdirs {
                     "./graphics_dependencies/glew/lib/Release/Win32",
-                    "./graphics_dependencies/SDL2/lib/win32"
+                    "./graphics_dependencies/SDL2/lib/win32",
+                    "./graphics_dependencies/SOIL/src"
                   }
           configuration "linux"
                    -- should be installed as in ./graphics_dependencies/README.asciidoc
