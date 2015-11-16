@@ -699,10 +699,6 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 		checkBallPaddleCollision(false);
 	else
 		checkBallPaddleCollision(true);
-
-	// make ball faster over time
-	ballSpeed[0] *= 1.001;
-	ballSpeed[1] *= 1.001;
 }
 // end::updateSimulation[]
 
