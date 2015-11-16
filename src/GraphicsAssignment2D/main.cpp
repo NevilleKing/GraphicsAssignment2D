@@ -394,7 +394,11 @@ void initializeVertexArrayObject()
 
 		glEnableVertexAttribArray(positionLocation); //enable attribute at index positionLocation
 
-		glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 0, 0); //specify that position data contains four floats per vertex, and goes into attribute index positionLocation
+		glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)0); //specify that position data contains four floats per vertex, and goes into attribute index positionLocation
+
+		glEnableVertexAttribArray(textureLocation); //enable attribute at index textureLocation
+
+		glVertexAttribPointer(textureLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat))); //specify that position data contains four floats per vertex, and goes into attribute index textureLocation
 
 	glBindVertexArray(scoreVAO); //make the just created vertexArrayObject the active one
 
@@ -402,8 +406,11 @@ void initializeVertexArrayObject()
 
 		glEnableVertexAttribArray(positionLocation); //enable attribute at index positionLocation
 
-		glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 0, 0); //specify that position data contains four floats per vertex, and goes into attribute index positionLocation
+		glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)0); //specify that position data contains four floats per vertex, and goes into attribute index positionLocation
 
+		glEnableVertexAttribArray(textureLocation); //enable attribute at index textureLocation
+
+		glVertexAttribPointer(textureLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat))); //specify that position data contains four floats per vertex, and goes into attribute index textureLocation
 
 	glBindVertexArray(0); //unbind the vertexArrayObject so we can't change it
 
@@ -447,6 +454,7 @@ void initializeTextures()
 	glGenTextures(1, &texture);
 
 	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
 	int width, height;
 	unsigned char* image = SOIL_load_image("img.jpg", &width, &height, 0, SOIL_LOAD_RGB);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
