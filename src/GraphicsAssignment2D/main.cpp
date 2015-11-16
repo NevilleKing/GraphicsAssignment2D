@@ -92,23 +92,23 @@ const GLfloat vertexData[] = {
 const GLfloat ballVertexData[] = {
 	// Ball
 	//  X       Y
-	-0.025f, 0.050f, // 1st triangle
-	-0.025f, -0.050f,
-	0.025f, 0.050f,
-	0.025f, 0.050f, // 2nd triangle
-	-0.025f, -0.050f,
-	0.025f, -0.050f
+	-0.025f, 0.050f,  0.0f, 0.0f,  // 1st triangle
+	-0.025f, -0.050f, 0.0f, 1.0f,
+	0.025f, 0.050f,   1.0f, 1.0f,
+	0.025f, 0.050f,   0.0f, 0.0f, // 2nd triangle
+	-0.025f, -0.050f, 1.0f, 0.0f,
+	0.025f, -0.050f,  1.0f, 1.0f
 };
 
 const GLfloat scoreVertexData[] = {
 	// Ball
 	//  X       Y
-	-0.0125f, 0.025f, // 1st triangle
-	-0.0125f, -0.025f,
-	0.0125f, 0.025f,
-	0.0125f, 0.025f, // 2nd triangle
-	-0.0125f, -0.025f,
-	0.0125f, -0.025f
+	-0.0125f, 0.025f,  0.0f, 0.0f, // 1st triangle
+	-0.0125f, -0.025f, 0.0f, 1.0f,
+	0.0125f, 0.025f,   1.0f, 1.0f,
+	0.0125f, 0.025f,   0.0f, 0.0f, // 2nd triangle
+	-0.0125f, -0.025f, 1.0f, 0.0f,
+	0.0125f, -0.025f,  1.0f, 1.0f
 };
 
 // offset
