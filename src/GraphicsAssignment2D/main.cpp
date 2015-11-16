@@ -91,24 +91,24 @@ const GLfloat vertexData[] = {
 
 const GLfloat ballVertexData[] = {
 	// Ball
-	//  X       Y
-	-0.025f, 0.050f, // 1st triangle
-	-0.025f, -0.050f,
-	0.025f, 0.050f,
-	0.025f, 0.050f, // 2nd triangle
-	-0.025f, -0.050f,
-	0.025f, -0.050f
+	//  X       Y	  Texture Stuff
+	-0.025f, 0.050f,  0.0f, 0.0f, // 1st triangle
+	-0.025f, -0.050f, 0.0f, 1.0f,
+	0.025f, 0.050f,   1.0f, 1.0f,
+	0.025f, 0.050f,	  0.0f, 0.0f, // 2nd triangle
+	-0.025f, -0.050f, 1.0f, 0.0f,
+	0.025f, -0.050f,  1.0f, 1.0f
 };
 
 const GLfloat scoreVertexData[] = {
 	// Ball
-	//  X       Y
-	-0.0125f, 0.025f, // 1st triangle
-	-0.0125f, -0.025f,
-	0.0125f, 0.025f,
-	0.0125f, 0.025f, // 2nd triangle
-	-0.0125f, -0.025f,
-	0.0125f, -0.025f
+	//  X       Y	   Texture stuff
+	-0.0125f, 0.025f,  0.0f, 0.0f, // 1st triangle
+	-0.0125f, -0.025f, 0.0f, 1.0f,
+	0.0125f, 0.025f,   1.0f, 1.0f,
+	0.0125f, 0.025f,   0.0f, 0.0f, // 2nd triangle
+	-0.0125f, -0.025f, 1.0f, 0.0f,
+	0.0125f, -0.025f,  1.0f, 1.0f
 };
 
 // offset
@@ -148,6 +148,7 @@ GLint positionLocation; //GLuint that we'll fill in with the location of the `po
 GLint colorLocation; //GLuint that we'll fill in with the location of the `color` variable in the GLSL
 GLint offsetLocation;
 GLint textureLocation;
+GLint textureImageLocation;
 
 GLuint vertexDataBufferObject;
 GLuint vertexArrayObject;
@@ -158,7 +159,7 @@ GLuint ballVAO;
 GLuint scoreDBO;
 GLuint scoreVAO;
 
-GLuint texture;
+GLuint textures[2];
 
 // end::ourVariables[]
 
@@ -356,6 +357,7 @@ void initializeProgram()
 	textureLocation = glGetAttribLocation(theProgram, "texcoord");
 	colorLocation = glGetUniformLocation(theProgram, "color");
 	offsetLocation = glGetUniformLocation(theProgram, "offset");
+	textureImageLocation = glGetUniformLocation(theProgram, "tex");
 
 	//clean up shaders (we don't need them anymore as they are no in theProgram
 	for_each(shaderList.begin(), shaderList.end(), glDeleteShader);
@@ -394,7 +396,11 @@ void initializeVertexArrayObject()
 
 		glEnableVertexAttribArray(positionLocation); //enable attribute at index positionLocation
 
-		glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 0, 0); //specify that position data contains four floats per vertex, and goes into attribute index positionLocation
+		glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)0); //specify that position data contains four floats per vertex, and goes into attribute index positionLocation
+
+		glEnableVertexAttribArray(textureLocation); //enable attribute at index textureLocation
+
+		glVertexAttribPointer(textureLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat))); //specify that position data contains four floats per vertex, and goes into attribute index textureLocation
 
 	glBindVertexArray(scoreVAO); //make the just created vertexArrayObject the active one
 
@@ -402,7 +408,11 @@ void initializeVertexArrayObject()
 
 		glEnableVertexAttribArray(positionLocation); //enable attribute at index positionLocation
 
-		glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 0, 0); //specify that position data contains four floats per vertex, and goes into attribute index positionLocation
+		glVertexAttribPointer(positionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)0); //specify that position data contains four floats per vertex, and goes into attribute index positionLocation
+
+		glEnableVertexAttribArray(textureLocation); //enable attribute at index textureLocation
+
+		glVertexAttribPointer(textureLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat))); //specify that position data contains four floats per vertex, and goes into attribute index textureLocation
 
 
 	glBindVertexArray(0); //unbind the vertexArrayObject so we can't change it
@@ -444,14 +454,22 @@ void initializeVertexBuffer()
 
 void initializeTextures()
 {
-	glGenTextures(1, &texture);
+	glGenTextures(2, textures);
 
 	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
 	int width, height;
 	unsigned char* image = SOIL_load_image("img.jpg", &width, &height, 0, SOIL_LOAD_RGB);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	SOIL_free_image_data(image);
-	glUniform1f(glGetUniformLocation(theProgram, "tex"), 0);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, textures[1]);
+	image = SOIL_load_image("img2.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	SOIL_free_image_data(image);
+
+	glUniform1f(textureImageLocation, 0);
 	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
