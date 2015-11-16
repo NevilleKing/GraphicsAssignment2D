@@ -148,6 +148,7 @@ GLint positionLocation; //GLuint that we'll fill in with the location of the `po
 GLint colorLocation; //GLuint that we'll fill in with the location of the `color` variable in the GLSL
 GLint offsetLocation;
 GLint textureLocation;
+GLint textureImageLocation;
 
 GLuint vertexDataBufferObject;
 GLuint vertexArrayObject;
@@ -158,7 +159,7 @@ GLuint ballVAO;
 GLuint scoreDBO;
 GLuint scoreVAO;
 
-GLuint texture;
+GLuint textures[2];
 
 // end::ourVariables[]
 
@@ -356,6 +357,7 @@ void initializeProgram()
 	textureLocation = glGetAttribLocation(theProgram, "texcoord");
 	colorLocation = glGetUniformLocation(theProgram, "color");
 	offsetLocation = glGetUniformLocation(theProgram, "offset");
+	textureImageLocation = glGetUniformLocation(theProgram, "tex");
 
 	//clean up shaders (we don't need them anymore as they are no in theProgram
 	for_each(shaderList.begin(), shaderList.end(), glDeleteShader);
@@ -451,20 +453,32 @@ void initializeVertexBuffer()
 
 void initializeTextures()
 {
-	glGenTextures(1, &texture);
+	glGenTextures(2, textures);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
 	int width, height;
 	unsigned char* image = SOIL_load_image("img.jpg", &width, &height, 0, SOIL_LOAD_RGB);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	SOIL_free_image_data(image);
-	glUniform1f(glGetUniformLocation(theProgram, "tex"), 0);
 	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, textures[1]);
+	image = SOIL_load_image("img2.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	SOIL_free_image_data(image);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	
+	glUniform1f(textureImageLocation, 0);
 }
 
 // tag::loadAssets[]
