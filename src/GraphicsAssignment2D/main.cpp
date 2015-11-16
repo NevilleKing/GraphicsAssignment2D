@@ -96,7 +96,7 @@ const GLfloat ballVertexData[] = {
 	-0.025f, -0.050f, 0.0f, 1.0f,
 	0.025f, 0.050f,   1.0f, 0.0f,
 	0.025f, 0.050f,   1.0f, 0.0f, // 2nd triangle
-	-0.025f, -0.050f, 0.0f, 0.1f,
+	-0.025f, -0.050f, 0.0f, 1.0f,
 	0.025f, -0.050f,  1.0f, 1.0f
 };
 
@@ -756,6 +756,10 @@ void render()
 
 	// ------------------------------ BATS
 
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textures[0]);
+	glUniform1f(textureImageLocation, 0);
+
 	glUniform2f(offsetLocation, offsetLeftBat[0], offsetLeftBat[1]); // update the position of the bat
 
 	glBindVertexArray(vertexArrayObject);
@@ -767,6 +771,9 @@ void render()
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	// ------------------------------ BALL
+
+	glBindTexture(GL_TEXTURE_2D, textures[1]);
+	glUniform1f(textureImageLocation, 1);
 
 	glBindVertexArray(ballVAO);
 
