@@ -103,12 +103,12 @@ const GLfloat ballVertexData[] = {
 const GLfloat scoreVertexData[] = {
 	// Score
 	//  X       Y      Texture Points
-	-0.0125f, 0.025f,  0.0f, 0.0f, // 1st triangle
-	-0.0125f, -0.025f, 0.0f, 1.0f,
-	0.0125f, 0.025f,   1.0f, 0.0f,
-	0.0125f, 0.025f,   1.0f, 0.0f, // 2nd triangle
-	-0.0125f, -0.025f, 0.0f, 1.0f,
-	0.0125f, -0.025f,  1.0f, 1.0f
+	-0.03f, 0.05f,  0.0f, 0.0f, // 1st triangle
+	-0.03f, -0.05f, 0.0f, 1.0f,
+	0.03f, 0.05f,   1.0f, 0.0f,
+	0.03f, 0.05f,   1.0f, 0.0f, // 2nd triangle
+	-0.03f, -0.05f, 0.0f, 1.0f,
+	0.03f, -0.05f,  1.0f, 1.0f
 };
 
 const GLfloat backgroundVertexData[] = {
@@ -131,7 +131,7 @@ GLfloat offsetBall[] = { 0.0, 0.0 };
 GLfloat ballSpeed[] = { 0.4, 0.8 }; // (x direction, y direction)
 
 GLfloat scoreOffset[] = { 0.0, -0.95 };
-const GLfloat SCORE_X_CHANGE = 0.04; // amount of change in the x axis with each new score
+const GLfloat SCORE_X_CHANGE = 0.03; // amount of change in the x axis with each new score
 const GLuint SCORE_LIMIT = 5;
 bool gameOver = false;
 
@@ -489,6 +489,7 @@ void initializeVertexBuffer()
 
 void initializeTextures()
 {
+	// allows the transparency to work
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -497,7 +498,7 @@ void initializeTextures()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
 	int width, height;
-	unsigned char* image = SOIL_load_image("img.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+	unsigned char* image = SOIL_load_image("paddle.jpg", &width, &height, 0, SOIL_LOAD_RGB);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	SOIL_free_image_data(image);
 	
@@ -508,7 +509,7 @@ void initializeTextures()
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, textures[1]);
-	image = SOIL_load_image("img2.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+	image = SOIL_load_image("ball.jpg", &width, &height, 0, SOIL_LOAD_RGB);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	SOIL_free_image_data(image);
 
@@ -531,7 +532,7 @@ void initializeTextures()
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, textures[3]);
 	image = SOIL_load_image("score.png", &width, &height, 0, SOIL_LOAD_RGBA);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image); // uses RGBA (transparency)
 	SOIL_free_image_data(image);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -771,7 +772,7 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 void preRender()
 {
 	glViewport(0, 0, 1000, 600); //set viewpoint
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f); //set clear colour
+	glClearColor(0.5f, 0.0f, 0.0f, 1.0f); //set clear colour
 	glClear(GL_COLOR_BUFFER_BIT); //clear the window (technical the scissor box bounds)
 }
 // end::preRender[]
@@ -779,7 +780,7 @@ void preRender()
 void renderScore()
 {
 	// LEFT SCORE
-	scoreOffset[0] = -0.98;
+	scoreOffset[0] = -0.955;
 	glUniform2f(offsetLocation, scoreOffset[0], scoreOffset[1]);
 
 	for (int i = 0; i < score[0]; i++)
@@ -790,7 +791,7 @@ void renderScore()
 	}
 
 	// RIGHT SCORE
-	scoreOffset[0] = 0.98;
+	scoreOffset[0] = 0.955;
 	glUniform2f(offsetLocation, scoreOffset[0], scoreOffset[1]);
 
 	for (int i = 0; i < score[1]; i++)
