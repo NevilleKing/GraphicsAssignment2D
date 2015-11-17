@@ -2,3 +2,4 @@ used http://headerphile.blogspot.co.uk/2014/07/part-9-no-more-delays.html
 http://noobtuts.com/cpp/2d-pong-game
 http://stackoverflow.com/questions/5289613/generate-random-float-between-two-floats
 https://open.gl/textures
+http://stackoverflow.com/questions/5206373/opengl-texture-transparency-doesnt-work

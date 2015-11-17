@@ -173,7 +173,7 @@ GLuint scoreVAO;
 GLuint backgroundDBO;
 GLuint backgroundVAO;
 
-GLuint textures[3];
+GLuint textures[4];
 
 // end::ourVariables[]
 
@@ -489,7 +489,10 @@ void initializeVertexBuffer()
 
 void initializeTextures()
 {
-	glGenTextures(2, textures);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glGenTextures(4, textures);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
@@ -518,6 +521,17 @@ void initializeTextures()
 	glBindTexture(GL_TEXTURE_2D, textures[2]);
 	image = SOIL_load_image("background.jpg", &width, &height, 0, SOIL_LOAD_RGB);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	SOIL_free_image_data(image);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, textures[3]);
+	image = SOIL_load_image("score.png", &width, &height, 0, SOIL_LOAD_RGBA);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 	SOIL_free_image_data(image);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -837,6 +851,9 @@ void render()
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	// ------------------------------ SCORE
+
+	glBindTexture(GL_TEXTURE_2D, textures[3]);
+	glUniform1f(textureImageLocation, 3);
 
 	glBindVertexArray(scoreVAO);
 
