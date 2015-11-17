@@ -635,7 +635,7 @@ GLdouble getDelta()
 // Check if the ball is colliding with the edges of the screen
 bool checkBallBounds(int index)
 {
-	if (checkBounds(offsetBall[index], -1+ballDimensions[index], 1- ballDimensions[index])) // check if the ball intersects with the boundary of the screen
+	if (checkBounds(offsetBall[index], -0.95+ballDimensions[index], 0.95- ballDimensions[index])) // check if the ball intersects with the boundary of the screen
 	{
 		if (!collidingWithSides[index]) // stops the ball getting stuck in the wall
 		{
@@ -707,7 +707,7 @@ void resetBall()
 	else
 		ballSpeed[0] = getRandomNumber(0.5f, 1.5f);
 
-	do {
+	do { // keep choosing a random speed until ball speed is not -0.3 < x < 0.3 (to make game interesting)
 		ballSpeed[1] = getRandomNumber(-1.5f, 1.5f);
 	} while (ballSpeed[1] < 0.3 && ballSpeed[1] > -0.3);
 }
@@ -731,8 +731,8 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 	offsetLeftBat[1] += (leftPaddleDirection * offsetUpdateSpeed * delta); // update the left bat location
 	offsetRightBat[1] += (rightPaddleDirection * offsetUpdateSpeed * delta); // update the right bat location
 	
-	offsetLeftBat[1] = clamp(offsetLeftBat[1], -1+paddleDimensions[1], 1-paddleDimensions[1]);
-	offsetRightBat[1] = clamp(offsetRightBat[1], -1 + paddleDimensions[1], 1 - paddleDimensions[1]);
+	offsetLeftBat[1] = clamp(offsetLeftBat[1], -0.95+paddleDimensions[1], 0.95-paddleDimensions[1]);
+	offsetRightBat[1] = clamp(offsetRightBat[1], -0.95 + paddleDimensions[1], 0.95 - paddleDimensions[1]);
 
 	// update ball position
 	offsetBall[0] += (ballSpeed[0] * delta);
