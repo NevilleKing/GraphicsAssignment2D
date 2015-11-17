@@ -159,7 +159,7 @@ GLuint ballVAO;
 GLuint scoreDBO;
 GLuint scoreVAO;
 
-GLuint textures[2];
+GLuint textures[3];
 
 // end::ourVariables[]
 
@@ -477,8 +477,18 @@ void initializeTextures()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, textures[2]);
+	image = SOIL_load_image("background.jpg", &width, &height, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	SOIL_free_image_data(image);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	
-	glUniform1f(textureImageLocation, 0);
 }
 
 // tag::loadAssets[]
@@ -714,7 +724,7 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 void preRender()
 {
 	glViewport(0, 0, 1000, 600); //set viewpoint
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //set clear colour
+	glClearColor(1.0f, 0.0f, 0.0f, 1.0f); //set clear colour
 	glClear(GL_COLOR_BUFFER_BIT); //clear the window (technical the scissor box bounds)
 }
 // end::preRender[]
