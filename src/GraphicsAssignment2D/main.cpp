@@ -79,7 +79,7 @@ high_resolution_clock::time_point timePrev;
 
 //the data about our geometry
 const GLfloat vertexData[] = {
-//      X      Y   Texture stuff
+//      X      Y     Texture Points
 // Paddle
 	0.000f,	0.200f,  0.0f, 0.0f, // 1st triangle
 	0.000f,	-0.200f, 0.0f, 1.0f,
@@ -91,7 +91,7 @@ const GLfloat vertexData[] = {
 
 const GLfloat ballVertexData[] = {
 	// Ball
-	//  X       Y
+	//  X       Y     Texture Points
 	-0.025f, 0.050f,  0.0f, 0.0f,  // 1st triangle
 	-0.025f, -0.050f, 0.0f, 1.0f,
 	0.025f, 0.050f,   1.0f, 0.0f,
@@ -101,14 +101,25 @@ const GLfloat ballVertexData[] = {
 };
 
 const GLfloat scoreVertexData[] = {
-	// Ball
-	//  X       Y
+	// Score
+	//  X       Y      Texture Points
 	-0.0125f, 0.025f,  0.0f, 0.0f, // 1st triangle
 	-0.0125f, -0.025f, 0.0f, 1.0f,
 	0.0125f, 0.025f,   1.0f, 0.0f,
 	0.0125f, 0.025f,   1.0f, 0.0f, // 2nd triangle
 	-0.0125f, -0.025f, 0.0f, 1.0f,
 	0.0125f, -0.025f,  1.0f, 1.0f
+};
+
+const GLfloat backgroundVertexData[] = {
+	// Background
+	//  X       Y   Texture Points
+	-0.95f, 0.95f,  0.0f, 0.0f, // 1st triangle
+	-0.95f, -0.95f, 0.0f, 1.0f,
+	0.95f, 0.95f,   1.0f, 0.0f,
+	0.95f, 0.95f,   1.0f, 0.0f, // 2nd triangle
+	-0.95f, -0.95f, 0.0f, 1.0f,
+	0.95f, -0.95f,  1.0f, 1.0f
 };
 
 // offset
