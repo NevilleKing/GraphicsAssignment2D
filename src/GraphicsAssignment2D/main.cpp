@@ -114,12 +114,12 @@ const GLfloat scoreVertexData[] = {
 const GLfloat backgroundVertexData[] = {
 	// Background
 	//  X       Y   Texture Points
-	-0.95f, 0.95f,  0.0f, 0.0f, // 1st triangle
-	-0.95f, -0.95f, 0.0f, 1.0f,
-	0.95f, 0.95f,   1.0f, 0.0f,
-	0.95f, 0.95f,   1.0f, 0.0f, // 2nd triangle
-	-0.95f, -0.95f, 0.0f, 1.0f,
-	0.95f, -0.95f,  1.0f, 1.0f
+	-0.97f, 0.95f,  0.0f, 0.0f, // 1st triangle
+	-0.97f, -0.95f, 0.0f, 1.0f,
+	0.97f, 0.95f,   1.0f, 0.0f,
+	0.97f, 0.95f,   1.0f, 0.0f, // 2nd triangle
+	-0.97f, -0.95f, 0.0f, 1.0f,
+	0.97f, -0.95f,  1.0f, 1.0f
 };
 
 // offset
@@ -245,7 +245,7 @@ void setGLAttributes()
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, major);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minor);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); //core profile
-	cout << "Set OpenGL context to versicreate remote branchon " << major << "." << minor << " OK!\n";
+	cout << "Set OpenGL context to version " << major << "." << minor << " OK!\n";
 }
 // tag::setGLAttributes[]
 
@@ -481,7 +481,7 @@ void initializeVertexBuffer()
 	glBindBuffer(GL_ARRAY_BUFFER, backgroundDBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(backgroundVertexData), backgroundVertexData, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	cout << "background vertexDataBufferObject created OK! GLUint is: " << scoreDBO << std::endl;
+	cout << "background vertexDataBufferObject created OK! GLUint is: " << backgroundDBO << std::endl;
 
 	initializeVertexArrayObject();
 }
@@ -750,9 +750,6 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 	else
 		checkBallPaddleCollision(true);
 
-	// make ball faster over time
-	ballSpeed[0] *= 1.001;
-	ballSpeed[1] *= 1.001;
 }
 // end::updateSimulation[]
 
@@ -800,9 +797,10 @@ void render()
 		//alternatively, use glUnivform2fv
 		//glUniform2fv(colorLocation, 1, color); //Note: the count is 1, because we are setting a single uniform vec2 - https://www.opengl.org/wiki/GLSL_:_common_mistakes#How_to_use_glUniform
 
+	glActiveTexture(GL_TEXTURE0);
+
 	// ------------------------------ BACKGROUND
 
-	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, textures[2]);
 	glUniform1f(textureImageLocation, 2);
 
@@ -814,7 +812,6 @@ void render()
 
 	// ------------------------------ BATS
 
-	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
 	glUniform1f(textureImageLocation, 0);
 
