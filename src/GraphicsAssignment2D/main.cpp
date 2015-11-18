@@ -46,10 +46,14 @@ const std::string strVertexShader = R"(
 	in vec2 position;
 	in vec2 texcoord;
 	uniform vec2 offset;
+	uniform float rotation = 0.0;
 	out vec2 Texcoord;
 	void main()
 	{
-		vec2 trianglePos = position + offset;
+		// rotation
+		vec2 newPosition = vec2((position.x * cos(rotation)) - (position.y * sin(rotation)), (position.y * cos(rotation)) + (position.x * sin(rotation)));		
+
+		vec2 trianglePos = newPosition + offset;
 		gl_Position = vec4(trianglePos, 0.0, 1.0);
 		Texcoord = texcoord;
 	}
@@ -160,6 +164,7 @@ GLint colorLocation; //GLuint that we'll fill in with the location of the `color
 GLint offsetLocation;
 GLint textureLocation;
 GLint textureImageLocation;
+GLint rotationPosition;
 
 GLuint vertexDataBufferObject;
 GLuint vertexArrayObject;
@@ -372,6 +377,7 @@ void initializeProgram()
 	colorLocation = glGetUniformLocation(theProgram, "color");
 	offsetLocation = glGetUniformLocation(theProgram, "offset");
 	textureImageLocation = glGetUniformLocation(theProgram, "tex");
+	rotationPosition = glGetUniformLocation(theProgram, "rotation");
 
 	//clean up shaders (we don't need them anymore as they are no in theProgram
 	for_each(shaderList.begin(), shaderList.end(), glDeleteShader);
@@ -811,6 +817,8 @@ void render()
 	glUniform3f(colorLocation, color[0], color[1], color[2]);
 		//alternatively, use glUnivform2fv
 		//glUniform2fv(colorLocation, 1, color); //Note: the count is 1, because we are setting a single uniform vec2 - https://www.opengl.org/wiki/GLSL_:_common_mistakes#How_to_use_glUniform
+
+	glUniform1f(rotationPosition, 0.0);
 
 	glActiveTexture(GL_TEXTURE0);
 
