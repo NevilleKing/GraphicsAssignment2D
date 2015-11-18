@@ -776,6 +776,11 @@ void updateSimulation(double simLength = 0.02) //update simulation with an amoun
 	else
 		checkBallPaddleCollision(true);
 
+	// update the rotation
+	angle += delta;
+
+	if (angle > 6.28319)
+		angle = 0.0f;
 }
 // end::updateSimulation[]
 
@@ -867,11 +872,6 @@ void render()
 	// ------------------------------ SCORE
 
 	glUniform1f(rotationPosition, 0.0); // reset rotation
-
-	angle += 0.001;
-
-	if (angle > 6.28319)
-		angle = 0.0f;
 
 	glBindTexture(GL_TEXTURE_2D, textures[3]);
 	glUniform1f(textureImageLocation, 3);
