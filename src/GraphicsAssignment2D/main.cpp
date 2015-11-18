@@ -53,7 +53,7 @@ const std::string strVertexShader = R"(
 		// rotation
 		vec2 newPosition = vec2((position.x * cos(rotation)) - (position.y * sin(rotation)), (position.y * cos(rotation)) + (position.x * sin(rotation)));		
 
-		vec2 trianglePos = newPosition + offset;
+			vec2 trianglePos = newPosition + offset;
 		gl_Position = vec4(trianglePos, 0.0, 1.0);
 		Texcoord = texcoord;
 	}
@@ -96,12 +96,12 @@ const GLfloat vertexData[] = {
 const GLfloat ballVertexData[] = {
 	// Ball
 	//  X       Y     Texture Points
-	-0.025f, 0.050f,  0.0f, 0.0f,  // 1st triangle
-	-0.025f, -0.050f, 0.0f, 1.0f,
-	0.025f, 0.050f,   1.0f, 0.0f,
-	0.025f, 0.050f,   1.0f, 0.0f, // 2nd triangle
-	-0.025f, -0.050f, 0.0f, 1.0f,
-	0.025f, -0.050f,  1.0f, 1.0f
+	-0.03f, 0.03f,  0.0f, 0.0f,  // 1st triangle
+	-0.03f, -0.03f, 0.0f, 1.0f,
+	0.03f, 0.03f,   1.0f, 0.0f,
+	0.03f, 0.03f,   1.0f, 0.0f, // 2nd triangle
+	-0.03f, -0.03f, 0.0f, 1.0f,
+	0.03f, -0.03f,  1.0f, 1.0f
 };
 
 const GLfloat scoreVertexData[] = {
@@ -139,8 +139,10 @@ const GLfloat SCORE_X_CHANGE = 0.03; // amount of change in the x axis with each
 const GLuint SCORE_LIMIT = 5;
 bool gameOver = false;
 
+GLfloat angle = 0.0f; // angle of rotation
+
 const GLfloat paddleDimensions[] = { 0.05, 0.2 }; // width and height needed for collision detection (width is full width, height is half (because of the centre of the shape))
-const GLfloat ballDimensions[] = { 0.025, 0.05 }; // half of width and height of ball
+const GLfloat ballDimensions[] = { 0.03, 0.03 }; // half of width and height of ball
 
 // directions of paddles - only needs up and down
 GLfloat leftPaddleDirection = 0.0;
@@ -712,6 +714,9 @@ void checkBallPaddleCollision(bool leftPaddle)
 
 void resetBall()
 {
+	// reset the rotation
+	angle = 0.0f;
+
 	// add score to correct opposing player
 	if (offsetBall[0] > 0.0)
 		score[0]++;
@@ -808,8 +813,6 @@ void renderScore()
 	}
 }
 
-GLfloat angle = 0.0f;
-
 // tag::render[]
 void render()
 {
@@ -866,6 +869,9 @@ void render()
 	glUniform1f(rotationPosition, 0.0); // reset rotation
 
 	angle += 0.001;
+
+	if (angle > 6.28319)
+		angle = 0.0f;
 
 	glBindTexture(GL_TEXTURE_2D, textures[3]);
 	glUniform1f(textureImageLocation, 3);
