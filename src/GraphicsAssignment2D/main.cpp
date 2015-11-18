@@ -808,6 +808,8 @@ void renderScore()
 	}
 }
 
+GLfloat angle = 0.0f;
+
 // tag::render[]
 void render()
 {
@@ -817,8 +819,6 @@ void render()
 	glUniform3f(colorLocation, color[0], color[1], color[2]);
 		//alternatively, use glUnivform2fv
 		//glUniform2fv(colorLocation, 1, color); //Note: the count is 1, because we are setting a single uniform vec2 - https://www.opengl.org/wiki/GLSL_:_common_mistakes#How_to_use_glUniform
-
-	glUniform1f(rotationPosition, 0.0);
 
 	glActiveTexture(GL_TEXTURE0);
 
@@ -850,6 +850,8 @@ void render()
 
 	// ------------------------------ BALL
 
+	glUniform1f(rotationPosition, angle);
+
 	glBindTexture(GL_TEXTURE_2D, textures[1]);
 	glUniform1f(textureImageLocation, 1);
 
@@ -860,6 +862,10 @@ void render()
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	// ------------------------------ SCORE
+
+	glUniform1f(rotationPosition, 0.0); // reset rotation
+
+	angle += 0.001;
 
 	glBindTexture(GL_TEXTURE_2D, textures[3]);
 	glUniform1f(textureImageLocation, 3);
